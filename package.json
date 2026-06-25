@@ -1,0 +1,53 @@
+{
+  "name": "ctxbudget",
+  "version": "0.1.0",
+  "description": "Audit the token cost of everything your AI coding agent auto-loads — CLAUDE.md, AGENTS.md, Cursor/Copilot/Windsurf/Cline rules, MCP config — and flag bloat, duplication, and budget pressure.",
+  "type": "module",
+  "bin": {
+    "ctxbudget": "bin/ctxbudget.js"
+  },
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "files": [
+    "bin",
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "start": "node bin/ctxbudget.js"
+  },
+  "keywords": [
+    "ai",
+    "agents",
+    "claude",
+    "claude-code",
+    "agents-md",
+    "cursor",
+    "copilot",
+    "context-window",
+    "tokens",
+    "productivity",
+    "cli",
+    "developer-tools"
+  ],
+  "author": "David Chong",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/davidcjw/ctxbudget.git"
+  },
+  "bugs": {
+    "url": "https://github.com/davidcjw/ctxbudget/issues"
+  },
+  "homepage": "https://github.com/davidcjw/ctxbudget#readme",
+  "devDependencies": {
+    "vitest": "^2.1.8"
+  }
+}
