@@ -39,9 +39,13 @@
   "engines": {
     "node": ">=18"
   },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "repository": {
     "type": "git",
-    "url": "https://github.com/davidcjw/ctxbudget.git"
+    "url": "git+https://github.com/davidcjw/ctxbudget.git"
   },
   "bugs": {
     "url": "https://github.com/davidcjw/ctxbudget/issues"
