@@ -3,7 +3,7 @@
 > Audit the token cost of everything your AI coding agent auto-loads — before it burns your context window.
 
 [![CI](https://github.com/davidcjw/ctxbudget/actions/workflows/ci.yml/badge.svg)](https://github.com/davidcjw/ctxbudget/actions/workflows/ci.yml)
-[![npm version](https://img.shields.io/npm/v/ctxbudget.svg)](https://www.npmjs.com/package/ctxbudget)
+[![npm version](https://img.shields.io/npm/v/@davidcjw/ctxbudget.svg)](https://www.npmjs.com/package/@davidcjw/ctxbudget)
 [![license: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![node](https://img.shields.io/badge/node-%3E%3D18-brightgreen.svg)](https://nodejs.org)
 [![zero dependencies](https://img.shields.io/badge/dependencies-0-blue.svg)](package.json)
@@ -47,13 +47,13 @@ Every AI coding agent — Claude Code, Cursor, Copilot, Windsurf, Cline — sile
 Run it without installing:
 
 ```bash
-npx ctxbudget
+npx @davidcjw/ctxbudget
 ```
 
 Or install globally:
 
 ```bash
-npm install -g ctxbudget
+npm install -g @davidcjw/ctxbudget
 ```
 
 Requires Node.js >= 18. **Zero runtime dependencies.**
@@ -158,7 +158,7 @@ Keep your agent context lean over time by failing the build when it bloats:
 
 ```yaml
 # .github/workflows/context-budget.yml
-- run: npx ctxbudget --fail-under 80
+- run: npx @davidcjw/ctxbudget --fail-under 80
 ```
 
 ## Programmatic API

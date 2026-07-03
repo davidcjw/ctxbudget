@@ -1,6 +1,6 @@
 {
-  "name": "ctxbudget",
-  "version": "0.1.0",
+  "name": "@davidcjw/ctxbudget",
+  "version": "0.1.1",
   "description": "Audit the token cost of everything your AI coding agent auto-loads — CLAUDE.md, AGENTS.md, Cursor/Copilot/Windsurf/Cline rules, MCP config — and flag bloat, duplication, and budget pressure.",
   "type": "module",
   "bin": {
