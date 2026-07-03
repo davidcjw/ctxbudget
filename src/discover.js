@@ -48,6 +48,28 @@ function walkDir(dir, exts, depth = 0, acc = []) {
   return acc;
 }
 
+/**
+ * List files directly in `dir` matching `exts` — a non-recursive `dir/*.ext`
+ * glob. Unlike walkDir it uses statSync (which follows symlinks), so a symlinked
+ * rule file (e.g. `~/.claude/rules/development.md` -> a dotfiles repo) is counted.
+ */
+function listFlat(dir, exts) {
+  let names;
+  try {
+    names = readdirSync(dir);
+  } catch {
+    return [];
+  }
+  const acc = [];
+  for (const name of names) {
+    if (!exts.some((e) => name.endsWith(e))) continue;
+    const full = join(dir, name);
+    const st = safeStat(full);
+    if (st && st.isFile()) acc.push(full);
+  }
+  return acc;
+}
+
 function makeEntry(source, absPath, baseDir, scope, extra = {}) {
   const content = readFile(absPath) ?? '';
   return {
@@ -123,7 +145,9 @@ function collectFromSource(source, rootDir, scope) {
     const dirAbs = join(rootDir, source.dir);
     const st = safeStat(dirAbs);
     if (st && st.isDirectory()) {
-      for (const f of walkDir(dirAbs, source.exts ?? ['.md'])) matches.push(f);
+      const exts = source.exts ?? ['.md'];
+      const files = source.flat ? listFlat(dirAbs, exts) : walkDir(dirAbs, exts);
+      for (const f of files) matches.push(f);
     }
   }
   return matches;

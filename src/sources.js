@@ -5,7 +5,9 @@
  * model's context. A source can declare:
  *   - `candidates`: explicit relative file paths to probe (first match wins per
  *     candidate; all existing candidates are reported).
- *   - `dir` + `exts`: a directory of rule files to walk.
+ *   - `dir` + `exts`: a directory of rule files to walk (recursively). Add
+ *     `flat: true` to match only files directly in `dir` (a non-recursive
+ *     `dir/*.ext` glob), following symlinks — used for Claude Code `rules/`.
  *
  * `autoLoaded: true` means the tool injects this content on (nearly) every turn,
  * so it counts toward the "always-on" context budget. `autoLoaded: false`
@@ -21,6 +23,20 @@ export const PROJECT_SOURCES = [
     autoLoaded: true,
     supportsImports: true,
     type: 'instructions',
+  },
+  {
+    id: 'claude-rules',
+    label: '.claude/rules',
+    tool: 'Claude Code',
+    // Claude Code auto-loads every `.md` directly in `.claude/rules/` (a flat
+    // `rules/*.md` glob) when settingSources includes "project". It also loads
+    // parent dirs' `.claude/rules/`, but — like our CLAUDE.md handling — we scan
+    // only the given root, not ancestors.
+    dir: '.claude/rules',
+    exts: ['.md'],
+    flat: true,
+    autoLoaded: true,
+    type: 'rules',
   },
   {
     id: 'agents-md',
@@ -108,6 +124,17 @@ export const GLOBAL_SOURCES = [
     autoLoaded: true,
     supportsImports: true,
     type: 'instructions',
+  },
+  {
+    id: 'claude-rules-global',
+    label: '~/.claude/rules',
+    tool: 'Claude Code',
+    // Auto-loaded when settingSources includes "user" (on by default).
+    dir: '.claude/rules',
+    exts: ['.md'],
+    flat: true,
+    autoLoaded: true,
+    type: 'rules',
   },
   {
     id: 'codex-global',
