@@ -13,7 +13,7 @@ Every AI coding agent — Claude Code, Cursor, Copilot, Windsurf, Cline — sile
 **`ctxbudget` is that bill.** Point it at a repo and it finds every agent context file, estimates the token cost of what gets auto-loaded, flags bloat and duplication, and gives you a context-health grade.
 
 <p align="center">
-  <img src="assets/demo.svg" alt="ctxbudget terminal report showing per-file token costs, a bloat warning, an overlap warning, and a health grade of C" width="680">
+  <img src="docs/demo.gif" alt="ctxbudget terminal report showing per-file token costs, bloat and overlap warnings, and a health grade of D" width="720">
 </p>
 
 ---
