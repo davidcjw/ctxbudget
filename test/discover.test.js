@@ -1,4 +1,6 @@
 import { describe, it, expect, afterEach } from 'vitest';
+import { symlinkSync, mkdirSync } from 'node:fs';
+import { join } from 'node:path';
 import { discover } from '../src/index.js';
 import { makeProject } from './helpers.js';
 
@@ -87,6 +89,53 @@ describe('discover', () => {
     const found = discover(project.root);
     expect(found.length).toBe(1);
     expect(found[0].imported).toBe(false);
+  });
+
+  it('counts .claude/rules/*.md as auto-loaded, flat (non-recursive)', () => {
+    project = makeProject({
+      'CLAUDE.md': 'base',
+      '.claude/rules/development.md': 'dev rule',
+      '.claude/rules/style.md': 'style rule',
+      '.claude/rules/ignore.txt': 'not markdown',
+      '.claude/rules/nested/deep.md': 'nested — Claude Code does not load this',
+    });
+    const found = discover(project.root);
+    const byPath = Object.fromEntries(found.map((e) => [e.relPath, e]));
+    expect(byPath['.claude/rules/development.md']?.autoLoaded).toBe(true);
+    expect(byPath['.claude/rules/style.md']?.autoLoaded).toBe(true);
+    // flat glob: nested dirs and non-.md files are excluded
+    expect(byPath['.claude/rules/nested/deep.md']).toBeUndefined();
+    expect(byPath['.claude/rules/ignore.txt']).toBeUndefined();
+  });
+
+  it('follows a symlinked rule file in .claude/rules', () => {
+    project = makeProject({
+      'CLAUDE.md': 'base',
+      'shared/dev.md': 'shared dev rules',
+    });
+    mkdirSync(join(project.root, '.claude/rules'), { recursive: true });
+    symlinkSync(join(project.root, 'shared/dev.md'), join(project.root, '.claude/rules/dev.md'));
+    const found = discover(project.root);
+    const entry = found.find((e) => e.relPath === '.claude/rules/dev.md');
+    expect(entry?.autoLoaded).toBe(true);
+    expect(entry?.content).toContain('shared dev rules');
+  });
+
+  it('counts ~/.claude/rules/*.md under --global', () => {
+    project = makeProject({ 'CLAUDE.md': 'project' });
+    const home = makeProject({
+      '.claude/CLAUDE.md': 'global',
+      '.claude/rules/dev.md': 'global dev rule',
+    });
+    try {
+      const withGlobal = discover(project.root, { global: true, home: home.root });
+      const rules = withGlobal.filter((e) => e.sourceId === 'claude-rules-global');
+      expect(rules.length).toBe(1);
+      expect(rules[0].scope).toBe('global');
+      expect(rules[0].autoLoaded).toBe(true);
+    } finally {
+      home.cleanup();
+    }
   });
 
   it('includes global sources only when requested', () => {

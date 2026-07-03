@@ -67,7 +67,7 @@ ctxbudget
 # Scan another repo
 ctxbudget ../my-app
 
-# Include your per-user global config (~/.claude/CLAUDE.md, ~/.codex/AGENTS.md)
+# Include your per-user global config (~/.claude/CLAUDE.md, ~/.claude/rules/*.md, ~/.codex/AGENTS.md)
 ctxbudget --global
 
 # Machine-readable output
@@ -82,7 +82,7 @@ ctxbudget --fail-under 80
 | Option | Description | Default |
 | --- | --- | --- |
 | `path` | Directory to scan | current directory |
-| `-g, --global` | Also include per-user config (`~/.claude/CLAUDE.md`, `~/.codex/AGENTS.md`) | off |
+| `-g, --global` | Also include per-user config (`~/.claude/CLAUDE.md`, `~/.claude/rules/*.md`, `~/.codex/AGENTS.md`) | off |
 | `-b, --budget <n>` | Context window size (tokens) for the `%` readout | `200000` |
 | `-t, --threshold <n>` | Per-file bloat threshold (tokens) | `1800` |
 | `--json` | Emit machine-readable JSON | off |
@@ -96,6 +96,7 @@ ctxbudget --fail-under 80
 | Source | Tool | Auto-loaded? |
 | --- | --- | --- |
 | `CLAUDE.md`, `.claude/CLAUDE.md`, `CLAUDE.local.md` (+ `@imports`) | Claude Code | ✅ every turn |
+| `.claude/rules/*.md` | Claude Code | ✅ every turn |
 | `AGENTS.md` | AGENTS.md (universal) | ✅ every turn |
 | `.cursorrules` | Cursor (legacy) | ✅ every turn |
 | `.cursor/rules/*.mdc` | Cursor | ⚙️ conditional |
@@ -104,7 +105,7 @@ ctxbudget --fail-under 80
 | `.clinerules` (file or dir) | Cline | ✅ every turn |
 | `.mcp.json` | MCP servers | ⚙️ tool schemas |
 
-With `--global`, it also includes `~/.claude/CLAUDE.md` and `~/.codex/AGENTS.md`.
+Claude Code auto-loads every `.md` directly in `.claude/rules/` (a flat `rules/*.md` glob, symlinks followed) — at the user level (`~/.claude/rules/`) and project level. With `--global`, ctxbudget also includes `~/.claude/CLAUDE.md`, `~/.claude/rules/*.md`, and `~/.codex/AGENTS.md`.
 
 **`@import` resolution:** Claude Code lets `CLAUDE.md` pull in other files with `@path/to/file` syntax. `ctxbudget` follows those imports (recursively, with cycle protection), counts their tokens, and attributes them to the parent file — so the "hidden" cost of imports shows up in your total.
 
